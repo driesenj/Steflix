@@ -5,6 +5,7 @@ import { Fade } from "react-reveal";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { AuthContext } from "../../Context/UserContext";
+import SteflixLogo from "../../images/SteflixLogo.png";
 
 function Navbar(props) {
   const { User } = useContext(AuthContext);
@@ -53,27 +54,15 @@ function Navbar(props) {
 
   return (
     <Fade>
-      <header
-        className={
-          props.playPage
-            ? "fixed top-0 z-10 w-full backdrop-blur-sm"
-            : "fixed top-0 z-10 w-full"
-        }
-      >
+      <header className={props.playPage ? "fixed top-0 z-10 w-full backdrop-blur-sm" : "fixed top-0 z-10 w-full"}>
         <nav
-          className={`transition duration-500 ease-in-out  ${
-            show && "transition duration-500 ease-in-out bg-black "
-          } `}
+          className={`transition duration-500 ease-in-out  ${show && "transition duration-500 ease-in-out bg-black "} `}
         >
           <div className="px-4 mx-auto max-w-8xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <img
-                    className="h-6 cursor-pointer w-18"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1920px-Netflix_2015_logo.svg.png"
-                    alt="NETFLIX"
-                  />
+                  <img className="h-6 cursor-pointer w-18" src={SteflixLogo} alt="STEFLIX" />
                 </div>
                 <div className="hidden md:block">
                   <div className="flex items-center ml-10 space-x-4">
@@ -142,7 +131,7 @@ function Navbar(props) {
                   ) : null}
 
                   {/* Notification icon */}
-                  <svg
+                  {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="items-center hidden w-10 h-10 pr-4 mt-auto mb-auto text-white cursor-pointer md:flex"
                     fill="none"
@@ -155,9 +144,9 @@ function Navbar(props) {
                       strokeLinejoin="round"
                       d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
-                  </svg>
+                  </svg> */}
 
-                  <div className="group inline-block relative transition ease-in-out delay-300">
+                  {/* <div className="group inline-block relative transition ease-in-out delay-300">
                     <Link to={"/profile"}>
                       <img
                         className="h-10 w-10 rounded-full cursor-pointer"
@@ -195,7 +184,7 @@ function Navbar(props) {
                         </a>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -218,12 +207,7 @@ function Navbar(props) {
                       aria-hidden="true"
                       onClick={NavBlack}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                   ) : (
                     <svg
@@ -235,12 +219,7 @@ function Navbar(props) {
                       aria-hidden="true"
                       onClick={NavTransparent}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   )}
                 </button>
@@ -261,9 +240,7 @@ function Navbar(props) {
               <div className="md:hidden" id="mobile-menu">
                 <div ref={ref} className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                   <Link to={"/"}>
-                    <a className="block px-3 py-2 text-base font-medium text-white rounded-md hover:bg-red-800">
-                      Home
-                    </a>
+                    <a className="block px-3 py-2 text-base font-medium text-white rounded-md hover:bg-red-800">Home</a>
                   </Link>
 
                   <Link to={"/series"}>

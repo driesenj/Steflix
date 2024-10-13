@@ -8,6 +8,6 @@ export const Adventure = `discover/movie?api_key=${API_KEY}&with_genres=12`;
 export const SciFi = `discover/movie?api_key=${API_KEY}&with_genres=878`;
 export const Animated = `discover/movie?api_key=${API_KEY}&with_genres=16`;
 export const War = `discover/movie?api_key=${API_KEY}&with_genres=10752`;
-export const trending = `trending/all/week?api_key=${API_KEY}&sort_by=popularity.desc&language=en-US`;
+export const trending = `https://stream.huisje.gent/Movies/Recommendations?UserId=5ce9ac84f5534a16adfd336a84c0cfb9`;
 export const trendingSeries = `/trending/tv/week?api_key=${API_KEY}&sort_by=popularity.desc&language=en-US`;
 export const UpcomingMovies = `/movie/upcoming?api_key=${API_KEY}&language=en-US`;

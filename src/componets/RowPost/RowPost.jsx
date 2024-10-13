@@ -24,8 +24,7 @@ import "./RowPostStyles.scss";
 function RowPost(props) {
   const { addToMyList, PopupMessage } = useUpdateMylist();
   const { playMovie } = usePlayMovie();
-  const { removeFromWatchedMovies, removePopupMessage } =
-    useUpdateWatchedMovies();
+  const { removeFromWatchedMovies, removePopupMessage } = useUpdateWatchedMovies();
   const { addToLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
   const { convertGenere } = useGenereConverter();
 
@@ -39,10 +38,12 @@ function RowPost(props) {
     if (props.movieData != null) {
       setMovies(props.movieData);
     } else {
-      axios.get(props.url).then((response) => {
-        console.log(response.data.results);
-        setMovies(response.data.results);
-      });
+      axios
+        .get(props.url, { headers: { Authorization: `MediaBrowser Token=75468623908a4ca7aa2cea220f86f3e8` } })
+        .then((response) => {
+          console.log(response.data);
+          setMovies(response.data.results);
+        });
     }
   }, []);
 
@@ -76,32 +77,25 @@ function RowPost(props) {
     if (shouldPop) {
       setMoviePopupInfo(movieInfo);
       setShowModal(true);
-      axios
-        .get(`/movie/${movieInfo.id}/videos?api_key=${API_KEY}&language=en-US`)
-        .then((responce) => {
-          console.log(responce.data);
-          if (responce.data.results.length !== 0) {
-            setUrlId(responce.data.results[0]);
-          } else {
-            console.log("Array Emptey");
-          }
-        });
+      axios.get(`/movie/${movieInfo.id}/videos?api_key=${API_KEY}&language=en-US`).then((responce) => {
+        console.log(responce.data);
+        if (responce.data.results.length !== 0) {
+          setUrlId(responce.data.results[0]);
+        } else {
+          console.log("Array Emptey");
+        }
+      });
     }
   };
 
   return (
-    <div
-      className="ml-2 lg:ml-11 mb-11 lg:mb-4 RowContainer"
-      style={{ marginTop: `${props.first ? "-8rem" : ""}` }}
-    >
+    <div className="ml-2 lg:ml-11 mb-11 lg:mb-4 RowContainer" style={{ marginTop: `${props.first ? "-8rem" : ""}` }}>
       {PopupMessage}
       {removePopupMessage}
 
       {movies[0] ? (
         <>
-          <h1 className="text-white pb-4 xl:pb-0 font-normal text-base sm:text-2xl md:text-4xl">
-            {props.title}
-          </h1>
+          <h1 className="text-white pb-4 xl:pb-0 font-normal text-base sm:text-2xl md:text-4xl">{props.title}</h1>
 
           <Swiper
             {...customSettings}
@@ -117,26 +111,16 @@ function RowPost(props) {
             {movies.map((obj, index) => {
               const converted = convertGenere(obj.genre_ids);
               return (
-                <SwiperSlide
-                  className={props.islarge ? "large" : "bg-cover"}
-                  onClick={() => handleMoviePopup(obj)}
-                >
+                <SwiperSlide className={props.islarge ? "large" : "bg-cover"} onClick={() => handleMoviePopup(obj)}>
                   {props.islarge ? (
                     <>
-                      <img
-                        className="rounded-sm"
-                        src={`${imageUrl + obj.poster_path}`}
-                      />
+                      <img className="rounded-sm" src={`${imageUrl + obj.poster_path}`} />
                     </>
                   ) : (
                     <>
                       <img
                         loading="lazy"
-                        className={
-                          props.movieData != null
-                            ? "border-b-4 border-red-700 rounded-sm"
-                            : "rounded-sm"
-                        }
+                        className={props.movieData != null ? "border-b-4 border-red-700 rounded-sm" : "rounded-sm"}
                         src={
                           obj.backdrop_path
                             ? `${imageUrl2 + obj.backdrop_path}`
@@ -185,11 +169,7 @@ function RowPost(props) {
                                 strokeWidth={1.5}
                                 stroke="currentColor"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 12h-15"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
                               </svg>
                             </div>
                           </>
@@ -208,11 +188,7 @@ function RowPost(props) {
                                 strokeWidth={1.5}
                                 stroke="currentColor"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M12 4.5v15m7.5-7.5h-15"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                               </svg>
                             </div>
                           </>
@@ -251,23 +227,15 @@ function RowPost(props) {
                             stroke="currentColor"
                             className="text-shadow-xl"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                            />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                           </svg>
                         </div>
                       </div>
 
-                      <h1 className="text-white ml-4 font-medium w-4/5 xl:line-clamp-1">
-                        {obj.name || obj.title}
-                      </h1>
+                      <h1 className="text-white ml-4 font-medium w-4/5 xl:line-clamp-1">{obj.name || obj.title}</h1>
 
                       <h1 className="text-white text-xs font-semibold ml-4 w-11/12">
-                        {obj.release_date ||
-                          (obj.first_air_date && obj.release_date) ||
-                          obj.first_air_date}
+                        {obj.release_date || (obj.first_air_date && obj.release_date) || obj.first_air_date}
                       </h1>
 
                       <div className="ml-4">
@@ -283,11 +251,7 @@ function RowPost(props) {
 
                       {converted &&
                         converted.map((genre) => {
-                          return (
-                            <span className="hidden text-white ml-4 font-thin text-xs lg:inline">
-                              {genre}
-                            </span>
-                          );
+                          return <span className="hidden text-white ml-4 font-thin text-xs lg:inline">{genre}</span>;
                         })}
                     </Fade>
                   </div>
@@ -327,20 +291,12 @@ function RowPost(props) {
                         stroke="currentColor"
                         className="text-white w-6 h-6 group-hover:text-black ease-linear transition-all duration-150"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
                     {/*Movie Trailer or Image*/}
                     {urlId ? (
-                      <YouTube
-                        opts={opts}
-                        videoId={urlId.key}
-                        className="YouTubeVid"
-                      />
+                      <YouTube opts={opts} videoId={urlId.key} className="YouTubeVid" />
                     ) : (
                       <img src={`${imageUrl + moviePopupInfo.backdrop_path}`} />
                     )}
@@ -380,11 +336,7 @@ function RowPost(props) {
                           strokeWidth={1.5}
                           stroke="currentColor"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 4.5v15m7.5-7.5h-15"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                       </div>
                       <div
@@ -412,9 +364,7 @@ function RowPost(props) {
                         <h3 className="text-3xl font-semibold text-white">
                           {moviePopupInfo.title || moviePopupInfo.name}
                         </h3>
-                        <h1 className="text-green-700 font-bold mt-2">
-                          {moviePopupInfo.release_date}
-                        </h1>
+                        <h1 className="text-green-700 font-bold mt-2">{moviePopupInfo.release_date}</h1>
                       </div>
                     </Fade>
                     {/*body*/}
@@ -448,28 +398,20 @@ function RowPost(props) {
                           <h1 className="flex text-neutral-400 text-sm leading-relaxed">
                             Released on :{"  "}
                             <p className="text-white ml-2 font-medium">
-                              {moviePopupInfo.release_date ||
-                                moviePopupInfo.first_air_date}
+                              {moviePopupInfo.release_date || moviePopupInfo.first_air_date}
                             </p>
                           </h1>
                           <h1 className="flex text-neutral-400 text-sm leading-relaxed">
-                            Language :
-                            <p className="text-white ml-2 font-medium">
-                              {moviePopupInfo.original_language}
-                            </p>
+                            Language :<p className="text-white ml-2 font-medium">{moviePopupInfo.original_language}</p>
                           </h1>
 
                           <h1 className="flex text-neutral-400 text-sm leading-relaxed">
                             Genere :
-                            {convertGenere(moviePopupInfo.genre_ids).slice(0,2).map(
-                              (genere) => {
-                                return (
-                                  <span className="text-white ml-2 font-medium">
-                                    {genere}
-                                  </span>
-                                );
-                              }
-                            )}
+                            {convertGenere(moviePopupInfo.genre_ids)
+                              .slice(0, 2)
+                              .map((genere) => {
+                                return <span className="text-white ml-2 font-medium">{genere}</span>;
+                              })}
                           </h1>
                         </div>
                       </Fade>

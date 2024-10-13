@@ -25,10 +25,8 @@ function Play() {
   const [similarMovies, setSimilarMovies] = useState([]);
 
   const { addToMyList, removeFromMyList, PopupMessage } = useUpdateMylist();
-  const { addToLikedMovies, removeFromLikedMovies, LikedMoviePopupMessage } =
-    useUpdateLikedMovies();
-  const { removeFromWatchedMovies, removePopupMessage } =
-    useUpdateWatchedMovies();
+  const { addToLikedMovies, removeFromLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
+  const { removeFromWatchedMovies, removePopupMessage } = useUpdateWatchedMovies();
   const { playMovie } = usePlayMovie();
 
   const { id } = useParams();
@@ -46,51 +44,38 @@ function Play() {
       setIsFromWatchedMovies(true);
     }
 
-    axios
-      .get(`/movie/${id}/videos?api_key=${API_KEY}&language=en-US`)
-      .then((responce) => {
-        console.log(responce.data, "This is the data");
+    axios.get(`/movie/${id}/videos?api_key=${API_KEY}&language=en-US`).then((responce) => {
+      console.log(responce.data, "This is the data");
+      if (responce.data.results.length !== 0) {
+        setUrlId(responce.data.results[0]);
+        setMoreTrailerVideos(responce.data.results);
+      } else {
+        console.log("Array Emptey");
+      }
+    });
+
+    if (urlId === "") {
+      axios.get(`/tv/${id}/videos?api_key=${API_KEY}&language=en-US`).then((responce) => {
         if (responce.data.results.length !== 0) {
+          console.log(responce.data.results[0], "This is using find ");
           setUrlId(responce.data.results[0]);
           setMoreTrailerVideos(responce.data.results);
+          console.log(moreTrailerVideos);
         } else {
           console.log("Array Emptey");
         }
       });
-
-    if (urlId === "") {
-      axios
-        .get(`/tv/${id}/videos?api_key=${API_KEY}&language=en-US`)
-        .then((responce) => {
-          if (responce.data.results.length !== 0) {
-            console.log(responce.data.results[0], "This is using find ");
-            setUrlId(responce.data.results[0]);
-            setMoreTrailerVideos(responce.data.results);
-            console.log(moreTrailerVideos);
-          } else {
-            console.log("Array Emptey");
-          }
-        });
     }
-    axios
-      .get(`/movie/${id}?api_key=${API_KEY}&language=en-US`)
-      .then((responce) => {
-        console.log(responce.data, "Movie deatils");
-        setMovieDetails(responce.data);
-        console.log(responce.data.genres[0]);
+    axios.get(`/movie/${id}?api_key=${API_KEY}&language=en-US`).then((responce) => {
+      console.log(responce.data, "Movie deatils");
+      setMovieDetails(responce.data);
+      console.log(responce.data.genres[0]);
 
-        axios
-          .get(
-            `movie/${id}/recommendations?api_key=${API_KEY}&language=en-US&page=1`
-          )
-          .then((res) => {
-            console.log(
-              res.data.results.slice(0, 8),
-              "ksdjfk ahdsfjksadhfjsdahf"
-            );
-            setSimilarMovies(res.data.results.slice(0, 8));
-          });
+      axios.get(`movie/${id}/recommendations?api_key=${API_KEY}&language=en-US&page=1`).then((res) => {
+        console.log(res.data.results.slice(0, 8), "ksdjfk ahdsfjksadhfjsdahf");
+        setSimilarMovies(res.data.results.slice(0, 8));
       });
+    });
   }, []);
 
   return (
@@ -142,16 +127,10 @@ function Play() {
 
               <div className="hidden lg:grid">
                 <h1 className=" text-red-700 ">
-                  Released on :{" "}
-                  <a className="text-white ml-1">
-                    {movieDetails.release_date || movieDetails.air_date}
-                  </a>
+                  Released on : <a className="text-white ml-1">{movieDetails.release_date || movieDetails.air_date}</a>
                 </h1>
                 <h1 className="text-red-700">
-                  Language :{" "}
-                  <a className="text-white ml-1">
-                    {movieDetails.original_language}
-                  </a>
+                  Language : <a className="text-white ml-1">{movieDetails.original_language}</a>
                 </h1>
                 <h1 className="text-red-700">
                   Geners :{" "}
@@ -279,15 +258,10 @@ function Play() {
                 <div>
                   <h1 className=" text-red-700 text-sm leading-7 sm:text-lg sm:leading-9 lg:text-2xl lg:leading-10">
                     Released on :{" "}
-                    <a className="text-white ml-2">
-                      {movieDetails.release_date || movieDetails.air_date}
-                    </a>
+                    <a className="text-white ml-2">{movieDetails.release_date || movieDetails.air_date}</a>
                   </h1>
                   <h1 className=" text-red-700 text-sm leading-7 sm:text-lg sm:leading-9 lg:text-2xl lg:leading-10">
-                    Language :{" "}
-                    <a className="text-white ml-2">
-                      {movieDetails.original_language}
-                    </a>
+                    Language : <a className="text-white ml-2">{movieDetails.original_language}</a>
                   </h1>
                   <h1 className="text-red-700 text-sm leading-7 sm:text-lg sm:leading-9 lg:text-2xl lg:leading-10">
                     Geners :{" "}
@@ -295,9 +269,7 @@ function Play() {
                       movieDetails.genres.slice(0, 2).map((gener) => {
                         return (
                           <>
-                            <span className="text-white ml-2">
-                              {gener.name}
-                            </span>
+                            <span className="text-white ml-2">{gener.name}</span>
                           </>
                         );
                       })}
@@ -359,7 +331,7 @@ function Play() {
                   }`
                 }
                 className="w-40 rounded-sm lg:w-[45rem] ml-4 lg:ml-0"
-                alt=<img src="https://i.ytimg.com/vi/Mwf--eGs05U/maxresdefault.jpg" />
+                alt=""
               />
             </div>
           </section>
@@ -392,22 +364,17 @@ function Play() {
                             />
                             <div class="p-1">
                               <h5 class="mt-1 mb-2 text-xl sm:text-2xl font-bold tracking-tight text-white dark:text-white">
-                                {similarMovie.original_title ||
-                                  similarMovie.title}
+                                {similarMovie.original_title || similarMovie.title}
                               </h5>
                               <div className="flex justify-between items-center text-white mb-1">
                                 <div className="flex items-center">
                                   <div className="flex sm:flex-col">
                                     <h1 className="text-green-500 text-xs lg:text-base">
-                                      {Math.floor(
-                                        Math.random() * (100 - 60 + 1) + 60
-                                      )}
-                                      % match
+                                      {Math.floor(Math.random() * (100 - 60 + 1) + 60)}% match
                                     </h1>
                                     <h1 className="text-xs lg:text-base ml-2 sm:ml-0">
                                       {similarMovie.release_date ||
-                                        (similarMovie.first_air_date &&
-                                          similarMovie.release_date) ||
+                                        (similarMovie.first_air_date && similarMovie.release_date) ||
                                         similarMovie.first_air_date}
                                     </h1>
                                   </div>

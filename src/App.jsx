@@ -33,26 +33,18 @@ function App() {
 
   return (
     <div>
-      {User ? <Navbar></Navbar> : <NavbarWithoutUser></NavbarWithoutUser>}
+      {<Navbar></Navbar>}
       <Suspense replace fallback={<Loading />}>
         <Routes>
-          <Route index path="/" element={User ? <Home /> : <Welcome />} />
-          {User ? (
-            <>
-              <Route path="/home" element={<Home />} />
-              <Route path="/series" element={<Series />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/mylist" element={<MyList />} />
-              <Route path="/liked" element={<LikedMovies />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/play/:id" element={<Play />} />
-            </>
-          ) : null}
+          <Route index path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/series" element={<Series />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/mylist" element={<MyList />} />
+          <Route path="/liked" element={<LikedMovies />} />
+          <Route path="/history" element={<History />} />
           <Route path="/play/:id" element={<Play />} />
-
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Suspense>
