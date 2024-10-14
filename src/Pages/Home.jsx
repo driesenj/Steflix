@@ -17,7 +17,7 @@ import {
 } from "../Constants/URLs";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Firebase/FirebaseConfig";
-import { AuthContext } from "../Context/UserContext";
+import { getJellyfinRecommendations, getTMDBTrending } from "../functions/services";
 
 function Home() {
   // const { User } = useContext(AuthContext);
@@ -34,11 +34,11 @@ function Home() {
 
   return (
     <div>
-      <Banner url={trending}></Banner>
+      <Banner getItems={getJellyfinRecommendations} ></Banner>
       <div className="w-[99%] ml-1">
-        <RowPost first title="Lokale Media" url={trending} key={trending}></RowPost>
-        <RowPost title="Animated" url={Animated} key={Animated}></RowPost>
-        {watchedMovies.length != 0 ? (
+        <RowPost first title="Lokale Media" getItems={getJellyfinRecommendations} key={trending}></RowPost>
+       <RowPost title="Trending" getItems={getTMDBTrending} key={Animated}></RowPost>
+         {/* {watchedMovies.length != 0 ? (
           <RowPost title="Watched Movies" movieData={watchedMovies} key={"Watched Movies"}></RowPost>
         ) : null}
         <RowPost title="Netflix Originals" islarge url={originals} key={originals}></RowPost>
@@ -48,7 +48,7 @@ function Home() {
         <RowPost title="Comedy" url={comedy}></RowPost>
         <RowPost title="Adventure" url={Adventure}></RowPost>
         <RowPost title="Horror" url={horror}></RowPost>
-        <RowPost title="War" url={War}></RowPost>
+        <RowPost title="War" url={War}></RowPost> */}
       </div>
       <Footer></Footer>
     </div>

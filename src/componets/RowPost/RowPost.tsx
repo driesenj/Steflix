@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "../../axios";
 import { imageUrl, imageUrl2, API_KEY } from "../../Constants/Constance";
 import useUpdateMylist from "../../CustomHooks/useUpdateMylist";
-import { Fade } from "react-reveal";
+import { Fade } from "react-awesome-reveal";
 import YouTube from "react-youtube";
 import StarRatings from "react-star-ratings";
 
@@ -20,31 +20,27 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./RowPostStyles.scss";
+import { Item } from "../../types/Item";
 
-function RowPost(props) {
+function RowPost(props: { title: string, first: boolean, islarge: boolean, getItems: () => Promise<Item[]>}) {
   const { addToMyList, PopupMessage } = useUpdateMylist();
   const { playMovie } = usePlayMovie();
   const { removeFromWatchedMovies, removePopupMessage } = useUpdateWatchedMovies();
-  const { addToLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
+  // const { addToLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
   const { convertGenere } = useGenereConverter();
 
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<Item[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [moviePopupInfo, setMoviePopupInfo] = useState({});
   const [shouldPop, setshouldPop] = useState(true);
   const [urlId, setUrlId] = useState("");
 
   useEffect(() => {
-    if (props.movieData != null) {
-      setMovies(props.movieData);
-    } else {
-      axios
-        .get(props.url, { headers: { Authorization: `MediaBrowser Token=75468623908a4ca7aa2cea220f86f3e8` } })
-        .then((response) => {
-          console.log(response.data);
-          setMovies(response.data.results);
-        });
-    }
+    // if (props.movieData != null) {
+    //   setMovies(props.movieData);
+    // } else {
+      props.getItems().then(items => setMovies(items))
+    // }
   }, []);
 
   const customSettings = {
@@ -73,24 +69,24 @@ function RowPost(props) {
     showinfo: 0,
   };
 
-  const handleMoviePopup = (movieInfo) => {
-    if (shouldPop) {
-      setMoviePopupInfo(movieInfo);
-      setShowModal(true);
-      axios.get(`/movie/${movieInfo.id}/videos?api_key=${API_KEY}&language=en-US`).then((responce) => {
-        console.log(responce.data);
-        if (responce.data.results.length !== 0) {
-          setUrlId(responce.data.results[0]);
-        } else {
-          console.log("Array Emptey");
-        }
-      });
-    }
-  };
+  // const handleMoviePopup = (movieInfo) => {
+  //   if (shouldPop) {
+  //     setMoviePopupInfo(movieInfo);
+  //     setShowModal(true);
+  //     axios.get(`/movie/${movieInfo.id}/videos?api_key=${API_KEY}&language=en-US`).then((responce) => {
+  //       console.log(responce.data);
+  //       if (responce.data.results.length !== 0) {
+  //         setUrlId(responce.data.results[0]);
+  //       } else {
+  //         console.log("Array Emptey");
+  //       }
+  //     });
+  //   }
+  // };
 
   return (
     <div className="ml-2 lg:ml-11 mb-11 lg:mb-4 RowContainer" style={{ marginTop: `${props.first ? "-8rem" : ""}` }}>
-      {PopupMessage}
+    {PopupMessage}
       {removePopupMessage}
 
       {movies[0] ? (
@@ -109,29 +105,33 @@ function RowPost(props) {
             className="SwiperStyle"
           >
             {movies.map((obj, index) => {
-              const converted = convertGenere(obj.genre_ids);
+              // const converted = convertGenere(obj.genre_ids);
               return (
-                <SwiperSlide className={props.islarge ? "large" : "bg-cover"} onClick={() => handleMoviePopup(obj)}>
+                <SwiperSlide 
+                  className={props.islarge ? "large" : "bg-cover"} 
+                  // onClick={() => handleMoviePopup(obj)}
+                >
                   {props.islarge ? (
                     <>
-                      <img className="rounded-sm" src={`${imageUrl + obj.poster_path}`} />
+                      <img className="rounded-sm" src={`${imageUrl + obj.image}`} />
                     </>
                   ) : (
                     <>
                       <img
                         loading="lazy"
-                        className={props.movieData != null ? "border-b-4 border-red-700 rounded-sm" : "rounded-sm"}
+                        // className={props.movieData != null ? "border-b-4 border-red-700 rounded-sm" : "rounded-sm"}
+                        className={"border-b-4 border-red-700 rounded-sm"}
                         src={
-                          obj.backdrop_path
-                            ? `${imageUrl2 + obj.backdrop_path}`
+                          obj.image
+                            ? obj.image
                             : "https://i.ytimg.com/vi/Mwf--eGs05U/maxresdefault.jpg"
                         }
-                        onClick={() => handleMoviePopup(obj)}
+                        // onClick={() => handleMoviePopup(obj)}
                       />
                     </>
-                  )}
+                  )} 
                   <div className="content pt-16">
-                    <Fade bottom duration={300}>
+                    <Fade duration={300}>
                       <div className="flex transition ml-3 ease-in-out delay-150">
                         <div
                           onClick={() => playMovie(obj)}
@@ -154,7 +154,7 @@ function RowPost(props) {
                           </svg>
                         </div>
 
-                        {props.movieData != null ? (
+                        {/* {props.movieData != null ? (
                           <>
                             <div
                               onClick={() => removeFromWatchedMovies(obj)}
@@ -229,18 +229,18 @@ function RowPost(props) {
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                           </svg>
-                        </div>
+                        </div> */}
                       </div>
 
-                      <h1 className="text-white ml-4 font-medium w-4/5 xl:line-clamp-1">{obj.name || obj.title}</h1>
+                      <h1 className="text-white ml-4 font-medium w-4/5 xl:line-clamp-1">{obj.title}</h1>
 
                       <h1 className="text-white text-xs font-semibold ml-4 w-11/12">
-                        {obj.release_date || (obj.first_air_date && obj.release_date) || obj.first_air_date}
+                        {obj.date.toLocaleDateString()}
                       </h1>
 
                       <div className="ml-4">
                         <StarRatings
-                          rating={obj.vote_average / 2}
+                          rating={obj.rating}
                           starRatedColor="red"
                           numberOfStars={5}
                           name="rating"
@@ -249,10 +249,10 @@ function RowPost(props) {
                         />
                       </div>
 
-                      {converted &&
+                      {/* {converted &&
                         converted.map((genre) => {
                           return <span className="hidden text-white ml-4 font-thin text-xs lg:inline">{genre}</span>;
-                        })}
+                        })} */}
                     </Fade>
                   </div>
                 </SwiperSlide>
@@ -276,9 +276,9 @@ function RowPost(props) {
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
               <div className="relative w-auto mt-24 sm:my-6 mx-4 max-w-3xl">
                 {/*content*/}
-                <Fade bottom duration={500}>
+                {/* <Fade bottom duration={500}>
                   <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-neutral-800 outline-none focus:outline-none">
-                    {/*header*/}
+
                     <button
                       className="group p-1 ml-2 mt-2 backdrop-blur-[20px] bg-transparent border-2 border-white hover:bg-white hover:text-black fixed right-4 rounded-full cursor-pointer float-right font-semibold outline-none focus:outline-none ease-linear transition-all duration-150"
                       onClick={() => setShowModal(false)}
@@ -294,7 +294,7 @@ function RowPost(props) {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
-                    {/*Movie Trailer or Image*/}
+                    
                     {urlId ? (
                       <YouTube opts={opts} videoId={urlId.key} className="YouTubeVid" />
                     ) : (
@@ -367,7 +367,7 @@ function RowPost(props) {
                         <h1 className="text-green-700 font-bold mt-2">{moviePopupInfo.release_date}</h1>
                       </div>
                     </Fade>
-                    {/*body*/}
+                    
                     <Fade bottom>
                       <div className="relative p-4 sm:p-6 flex-auto">
                         <div className="bg-neutral-700 h-[0.15rem]"></div>
@@ -377,9 +377,9 @@ function RowPost(props) {
                         <div className="bg-neutral-700 h-[0.15rem]"></div>
                       </div>
                     </Fade>
-                    {/*footer*/}
+                    
                     <div className="sm:flex items-center justify-end p-2 rounded-b">
-                      {/*More Info*/}
+                      
                       <Fade bottom>
                         <div className="relative p-2 py-5 sm:p-6 flex-auto">
                           <h1 className="flex -mt-4 text-neutral-400 text-sm leading-relaxed">
@@ -463,7 +463,7 @@ function RowPost(props) {
                       </div>
                     </div>
                   </div>
-                </Fade>
+                </Fade> */}
               </div>
             </div>
             <div className="opacity-40 fixed inset-0 z-40 bg-black"></div>

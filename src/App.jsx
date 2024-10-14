@@ -16,7 +16,7 @@ const History = lazy(() => import("./Pages/History"));
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthContext } from "./Context/UserContext";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Loading from "./componets/Loading/Loading";
 import Navbar from "./componets/Header/Navbar";
 import NavbarWithoutUser from "./componets/Header/NavbarWithoutUser";
@@ -24,11 +24,11 @@ import NavbarWithoutUser from "./componets/Header/NavbarWithoutUser";
 function App() {
   const { User, setUser } = useContext(AuthContext);
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      console.log(user);
-    });
+    // const auth = getAuth();
+    // onAuthStateChanged(auth, (user) => {
+    //   setUser(user);
+    //   console.log(user);
+    // });
   }, []);
 
   return (
